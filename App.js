@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
-
+import { API_KEY, API_ID } from 'react-native-dotenv';
 export default class App extends React.Component {
   constructor() {
     super();
@@ -10,13 +10,12 @@ export default class App extends React.Component {
     }  
   }
   generateUrl = params => {
-    const newUrl = `https://api.edamam.com/api/food-database/parser?ingr=${params}&app_id=123&app_key=123`;
+    const newUrl = `https://api.edamam.com/api/food-database/parser?ingr=${params}&app_id=${API_ID}&app_key=${API_KEY}`;
     console.log(newUrl);
     return newUrl
   }
   updateInputValue = e => {
     this.setState({ searchValue: e });
-    console.log(e);
   }
   
   fetchFood = url => {
@@ -46,8 +45,8 @@ export default class App extends React.Component {
         placeholder="search here" value={this.state.searchValue}></TextInput>
         <Button onPress={this.onClick} title="Search"></Button>
         <FlatList
-  data={this.state.foods.map(f => { return {key: f.label};})}
-  renderItem={({item}) => <Text>{item.key}</Text>}
+  data={this.state.foods.map(f => { return {key: f.foodId, name: f.label};})}
+  renderItem={({item}) => <Text>{item.name}</Text>}
 />
       </View>
     );
