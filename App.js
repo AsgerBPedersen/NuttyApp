@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+import Search from './Search';
 import { API_KEY, API_ID } from 'react-native-dotenv';
 export default class App extends React.Component {
   constructor() {
@@ -40,19 +41,16 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-        onChangeText={(value) => this.updateInputValue(value)}
-        placeholder="search here" value={this.state.searchValue}></TextInput>
-        <Button onPress={this.onClick} title="Search"></Button>
+        <Search searchValue={this.state.searchValue} updateInputValue={this.updateInputValue} onClick={this.onClick}></Search>
         <FlatList
-  data={this.state.foods.map(f => { return {key: f.foodId, name: f.label};})}
-  renderItem={({item}) => <Text>{item.name}</Text>}
-/>
+          data={this.state.foods.map((f, index) => { return {key: f.foodId+index, name: f.label};})}
+          renderItem={({item}) => <Text>{item.name}</Text>}
+        />
       </View>
     );
   }
 }
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
