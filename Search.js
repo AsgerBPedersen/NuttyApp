@@ -6,12 +6,13 @@ export default class Search extends React.Component {
 
 render() {
     return (
-        <View>
-            <TextInput
+            <View>
+                <TextInput
                 onChangeText={(value) => this.props.updateInputValue(value)}
-                placeholder="search here" value={this.props.searchValue}></TextInput>
-            <Button onPress={this.props.onClick} title="Search"></Button>
-        </View>
-    );
-}
+                placeholder="search here" value={this.props.searchValue}>
+                </TextInput>
+                <Button onPress={this.props.onClick} title="Search"></Button>
+            </View>
+            );
+    }
 }

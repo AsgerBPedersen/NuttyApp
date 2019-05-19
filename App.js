@@ -1,8 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
 import Search from './Search';
+import DetailsScreen from './Details';
+import { createStackNavigator, createAppContainer } from 'react-navigation'
 import { API_KEY, API_ID } from 'react-native-dotenv';
-export default class App extends React.Component {
+class HomeScreen extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -46,6 +48,10 @@ export default class App extends React.Component {
           data={this.state.foods.map((f, index) => { return {key: f.foodId+index, name: f.label};})}
           renderItem={({item}) => <Text>{item.name}</Text>}
         />
+        <Button
+          title="Go to Details"
+          onPress={() => this.props.navigation.navigate('Details')}
+        />
       </View>
     );
   }
@@ -60,3 +66,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+const AppNavigator = createStackNavigator({
+  Home: HomeScreen,
+  Details : DetailsScreen
+},
+{
+  initialRouteName: "Home"
+});
+const AppContainer = createAppContainer(AppNavigator);
+
+export default class App extends React.Component {
+  render() {
+    return  <AppContainer />
+  }
+}
