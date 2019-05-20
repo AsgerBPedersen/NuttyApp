@@ -20,8 +20,8 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       foods: [],
-      searchValue: "",
-      testId: 1
+      foodInventory: [],
+      searchValue: ""
     }  
   }
   generateUrl = params => {
@@ -52,9 +52,13 @@ export default class App extends React.Component {
     const url = this.generateUrl(this.state.searchValue);
     this.fetchFood(url);
   }
-  onClickAdd = () => {
-    const oldId = this.state.testId
-    this.setState({testId : oldId + 1})
+  onClickAdd = (foodItem) => {
+    const newInv = this.state.foodInventory;
+    newInv.push(foodItem);
+    this.setState({foodInventory : newInv});
+    this.state.foodInventory.forEach(element => {
+      console.log(element.label);
+    });
   }
   render() {
     return  <AppContainer screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}  />

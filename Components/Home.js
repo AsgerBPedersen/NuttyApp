@@ -4,17 +4,24 @@ import Search from './Search';
 
 export default class HomeScreen extends React.Component {
   render() {
+
     const { onClick, baseState, updateInputValue, onClickAdd } = this.props.screenProps
-    const { foods, searchValue, testId } = baseState;
+    const { foods, searchValue } = baseState;
+
     return (
       <View style={styles.container}>
-        <Search searchValue={searchValue} updateInputValue={updateInputValue} onClick={onClick}></Search>
+        <Search 
+        searchValue={searchValue} 
+        updateInputValue={updateInputValue} 
+        onClick={onClick}></Search>
         <FlatList
-          data={foods.map((f, index) => { return {key: f.foodId+index, name: f.label};})}
-          renderItem={({item}) => <Text>{item.name}</Text>}
+          data={foods.map((f, index) => { return {key: f.foodId+index, foodItem: f};})}
+          renderItem={({item}) => 
+          <View>
+            <Text>{item.foodItem.label}</Text>
+            <Button title="Add" onPress={() => onClickAdd(item.foodItem)}></Button>
+          </View>}
         />
-        <Text>{testId}</Text>
-        <Button title="ADD" onPress={onClickAdd}></Button>
         <Button
           title="Go to Details"
           onPress={() => this.props.navigation.navigate('Details')}
@@ -24,7 +31,7 @@ export default class HomeScreen extends React.Component {
     );
   }
 }
- 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
