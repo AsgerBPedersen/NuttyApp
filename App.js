@@ -5,11 +5,54 @@ import DetailsScreen from './Details';
 import { createStackNavigator, createAppContainer } from 'react-navigation'
 import { API_KEY, API_ID } from 'react-native-dotenv';
 class HomeScreen extends React.Component {
-  constructor() {
-    super();
+  render() {
+    const { onClick, baseState, updateInputValue, onClickAdd } = this.props.screenProps
+    const { foods, searchValue, testId } = baseState;
+    return (
+      <View style={styles.container}>
+        <Search searchValue={searchValue} updateInputValue={updateInputValue} onClick={onClick}></Search>
+        <FlatList
+          data={foods.map((f, index) => { return {key: f.foodId+index, name: f.label};})}
+          renderItem={({item}) => <Text>{item.name}</Text>}
+        />
+        <Text>{testId}</Text>
+        <Button title="ADD" onPress={onClickAdd}></Button>
+        <Button
+          title="Go to Details"
+          onPress={() => this.props.navigation.navigate('Details')}
+        />
+      </View>
+      
+    );
+  }
+}
+ 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+const AppNavigator = createStackNavigator({
+  Home: HomeScreen,
+  Details: DetailsScreen
+},
+{
+  initialRouteName: "Home"
+});
+const AppContainer = createAppContainer(AppNavigator);
+
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
     this.state = {
       foods: [],
-      searchValue: ""
+      searchValue: "",
+      testId: 1
     }  
   }
   generateUrl = params => {
@@ -40,44 +83,11 @@ class HomeScreen extends React.Component {
     const url = this.generateUrl(this.state.searchValue);
     this.fetchFood(url);
   }
-  render() {
-    return (
-      <View style={styles.container}>
-        <Search searchValue={this.state.searchValue} updateInputValue={this.updateInputValue} onClick={this.onClick}></Search>
-        <FlatList
-          data={this.state.foods.map((f, index) => { return {key: f.foodId+index, name: f.label};})}
-          renderItem={({item}) => <Text>{item.name}</Text>}
-        />
-        <Button
-          title="Go to Details"
-          onPress={() => this.props.navigation.navigate('Details')}
-        />
-      </View>
-    );
+  onClickAdd = () => {
+    const oldId = this.state.testId
+    this.setState({testId : oldId + 1})
   }
-}
- 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
-const AppNavigator = createStackNavigator({
-  Home: HomeScreen,
-  Details : DetailsScreen
-},
-{
-  initialRouteName: "Home"
-});
-const AppContainer = createAppContainer(AppNavigator);
-
-export default class App extends React.Component {
   render() {
-    return  <AppContainer />
+    return  <AppContainer screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}  />
   }
 }
