@@ -8,6 +8,14 @@ export default class HomeScreen extends React.Component {
     const { onClick, baseState, updateInputValue, onClickAdd } = this.props.screenProps
     const { foods, searchValue } = baseState;
 
+    _renderItem = ({item}) => 
+    <View style={{padding: 20}}>
+      <Text>{item.foodItem.label}</Text>
+      <Text>kcal: {item.foodItem.nutrients.ENERC_KCAL}</Text>
+      <Button title="Add" onPress={() => onClickAdd(item.foodItem)}></Button>
+    </View>
+    
+
     return (
       <View style={styles.container}>
         <Search 
@@ -16,11 +24,7 @@ export default class HomeScreen extends React.Component {
         onClick={onClick}></Search>
         <FlatList
           data={foods.map((f, index) => { return {key: f.foodId+index, foodItem: f};})}
-          renderItem={({item}) => 
-          <View>
-            <Text>{item.foodItem.label}</Text>
-            <Button title="Add" onPress={() => onClickAdd(item.foodItem)}></Button>
-          </View>}
+          renderItem = {_renderItem}
         />
         <Button
           title="Go to Details"
