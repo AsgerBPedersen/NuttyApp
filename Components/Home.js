@@ -9,27 +9,29 @@ export default class HomeScreen extends React.Component {
     const { foods, searchValue } = baseState;
 
     _renderItem = ({item}) => 
-    <View style={{padding: 20}}>
+    <View>
       <Text>{item.foodItem.label}</Text>
       <Text>kcal: {item.foodItem.nutrients.ENERC_KCAL}</Text>
       <Button title="Add" onPress={() => onClickAdd(item.foodItem)}></Button>
     </View>
-    
+     
 
     return (
       <View style={styles.container}>
         <Search 
-        searchValue={searchValue} 
-        updateInputValue={updateInputValue} 
-        onClick={onClick}></Search>
-        <FlatList
-          data={foods.map((f, index) => { return {key: f.foodId+index, foodItem: f};})}
-          renderItem = {_renderItem}
-        />
-        <Button
-          title="Go to Details"
-          onPress={() => this.props.navigation.navigate('Details')}
-        />
+     searchValue={searchValue} 
+     updateInputValue={updateInputValue} 
+     onClick={onClick}></Search>
+     
+     <FlatList contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
+       data={foods.map((f, index) => { return {key: f.foodId+index, foodItem: f};})}
+       renderItem = {_renderItem}
+     />
+    
+     <Button
+       title="Go to Details"
+       onPress={() => this.props.navigation.navigate('Details')}
+     />
       </View>
       
     );
@@ -39,8 +41,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
+    backgroundColor: '#fefefe',
     alignItems: 'center',
     justifyContent: 'center',
   },
