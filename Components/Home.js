@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
 import Search from './Search';
+import ListItem from './ListItem';
 
 export default class HomeScreen extends React.Component {
   render() {
@@ -9,12 +10,8 @@ export default class HomeScreen extends React.Component {
     const { foods, searchValue } = baseState;
 
     _renderItem = ({item}) => 
-    <View>
-      <Text>{item.foodItem.label}</Text>
-      <Text>kcal: {item.foodItem.nutrients.ENERC_KCAL}</Text>
-      <Button title="Add" onPress={() => onClickAdd(item.foodItem)}></Button>
-    </View>
-     
+    <ListItem item={item} onClickAdd={onClickAdd}></ListItem>
+    
 
     return (
       <View style={styles.container}>
@@ -23,7 +20,7 @@ export default class HomeScreen extends React.Component {
      updateInputValue={updateInputValue} 
      onClick={onClick}></Search>
      
-     <FlatList contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
+     <FlatList
        data={foods.map((f, index) => { return {key: f.foodId+index, foodItem: f};})}
        renderItem = {_renderItem}
      />

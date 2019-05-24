@@ -5,7 +5,6 @@ import { createStackNavigator, createAppContainer } from 'react-navigation'
 import { API_KEY, API_ID } from 'react-native-dotenv';
 
 
-
 const AppNavigator = createStackNavigator({
   Home: HomeScreen,
   Details: DetailsScreen
@@ -52,13 +51,16 @@ export default class App extends React.Component {
     const url = this.generateUrl(this.state.searchValue);
     this.fetchFood(url);
   }
-  onClickAdd = (foodItem) => {
+  onClickAdd = (foodItem, amount) => {
     const newInv = this.state.foodInventory;
-    newInv.push(foodItem);
+    let newFoodItem = foodItem;
+    foodItem.amount = amount;
+    newInv.push(newFoodItem);
     this.setState({foodInventory : newInv});
     this.state.foodInventory.forEach(element => {
       console.log(element.label);
-    });
+      console.log(element.amount);
+    })
   }
   render() {
     return  <AppContainer screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}  />
