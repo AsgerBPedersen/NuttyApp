@@ -1,18 +1,10 @@
 import React from 'react';
 import HomeScreen from './Components/Home';
 import DetailsScreen from './Components/Details';
-import { createStackNavigator, createAppContainer } from 'react-navigation'
+import Swiper from 'react-native-swiper';
 import { API_KEY, API_ID } from 'react-native-dotenv';
 
 
-const AppNavigator = createStackNavigator({
-  Home: HomeScreen,
-  Details: DetailsScreen
-},
-{
-  initialRouteName: "Home"
-});
-const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
   constructor(props) {
@@ -23,6 +15,7 @@ export default class App extends React.Component {
       searchValue: ""
     }  
   }
+  
   generateUrl = params => {
     const newUrl = `https://api.edamam.com/api/food-database/parser?ingr=${params}&app_id=${API_ID}&app_key=${API_KEY}`;
     console.log(newUrl);
@@ -62,7 +55,13 @@ export default class App extends React.Component {
       console.log(element.amount);
     })
   }
+  
   render() {
-    return  <AppContainer screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}  />
+    return (
+      <Swiper>
+        <HomeScreen screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></HomeScreen>
+        <DetailsScreen screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></DetailsScreen>
+      </Swiper>
+    )
   }
 }
