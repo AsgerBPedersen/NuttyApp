@@ -4,6 +4,7 @@ import Search from './Search';
 import ListItem from './ListItem';
 
 export default class HomeScreen extends React.Component {
+  
   render() {
 
     const { onClick, baseState, updateInputValue, onClickAdd } = this.props.screenProps
@@ -24,11 +25,6 @@ export default class HomeScreen extends React.Component {
        data={foods.map((f, index) => { return {key: f.foodId+index, foodItem: f};})}
        renderItem = {_renderItem}
      />
-    
-     <Button
-       title="Go to Details"
-       onPress={() => this.props.navigation.navigate('Details')}
-     />
       </View>
       
     );
@@ -38,6 +34,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 50,
     backgroundColor: '#fefefe',
     alignItems: 'center',
     justifyContent: 'center',
