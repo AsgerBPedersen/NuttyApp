@@ -39,6 +39,7 @@ export default class App extends React.Component {
     .catch(error => console.log(error));
   }
 
+  
   storeFood = data => {
     const food = data.hints.map(hint => {
       const { foodId, label, nutrients } = hint.food;
@@ -49,9 +50,11 @@ export default class App extends React.Component {
 
   onClick = () => {
     const url = this.generateUrl(this.state.searchValue);
+    console.log("works");
     this.fetchFood(url);
   }
   onClickAdd = (foodItem, amount) => {
+    console.log("works");
     const newInv = this.state.foodInventory;
     let newFoodItem = foodItem;
     foodItem.amount = amount;
