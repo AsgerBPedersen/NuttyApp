@@ -12,6 +12,10 @@ export default class App extends React.Component {
     this.state = {
       foods: [],
       foodInventory: [],
+      totalKcal: 0,
+      totalProtein: 0,
+      totalFat: 0,
+      totalCarbs: 0,
       searchValue: ""
     }  
   }
@@ -46,17 +50,31 @@ export default class App extends React.Component {
     console.log("works");
     this.fetchFood(url);
   }
+
   onClickAdd = (foodItem, amount) => {
     console.log("works");
     const newInv = this.state.foodInventory;
-    let newFoodItem = foodItem;
-    foodItem.amount = amount;
+    let newFoodItem = Object.create(foodItem);
+    newFoodItem.amount = amount;
     newInv.push(newFoodItem);
     this.setState({foodInventory : newInv});
-    this.state.foodInventory.forEach(element => {
-      console.log(element.label);
-      console.log(element.amount);
-    })
+    this.setState({totalKcal: this.state.foodInventory.reduce((prev, curr) => {
+      return prev + curr.nutrients.ENERC_KCAL * (curr.amount/100);
+      }, 0)
+    });
+    this.setState({totalProtein: this.state.foodInventory.reduce((prev, curr) => {
+      return prev + curr.nutrients.PROCNT * (curr.amount/100);
+      }, 0)
+    });
+    this.setState({totalFat: this.state.foodInventory.reduce((prev, curr) => {
+      return prev + curr.nutrients.FAT * (curr.amount/100);
+      }, 0)
+    });
+    this.setState({totalCarbs: this.state.foodInventory.reduce((prev, curr) => {
+      return prev + curr.nutrients.CHOCDF * (curr.amount/100);
+      }, 0)
+    });
+  console.log(JSON.stringify(this.state.totalKcal))
   }
   
   render() {
