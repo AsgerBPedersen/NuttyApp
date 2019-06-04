@@ -6,12 +6,26 @@ export default class DetailsScreen extends React.Component {
 
 render() {
     const { onClick, baseState, updateInputValue, onClickAdd } = this.props.screenProps;
-    const { foods, searchValue, testId } = baseState;
+    const { foodInventory, totalKcal, totalProtein, totalFat, totalCarbs } = baseState;
+    
     return (
-            <View>
-                <Text>{testId}</Text>
-                <Button title="ADD" onPress={onClickAdd}></Button>
+            <View style={styles.container}>
+                <Text>daily intake</Text>
+                <Text>Kcal: {totalKcal}</Text>
+                <Text>Protein: {Math.round(totalProtein)}</Text>
+                <Text>Fat: {Math.round(totalFat)}</Text>
+                <Text>Carbs: {Math.round(totalCarbs)}</Text>
             </View>
             );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: 50,
+      backgroundColor: '#fefefe',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
