@@ -3,12 +3,12 @@ const bodyParser = require('body-parser');
 const graphqlHttp = require('express-graphql');
 const { buildSchema } = require('graphql');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const Food = require("./models/food");
+const User = require("./models/user");
 
 const app = express();
-
-const foods = [];
 
 app.use(bodyParser.json());
 
@@ -25,6 +25,12 @@ app.use(
             carbs: Float!
         }
 
+        type User {
+            _id: ID!
+            email: String!
+            password: String
+        }
+
         input FoodInput {
             name: String!
             kcal: Float!
@@ -34,12 +40,18 @@ app.use(
             date: String!
         }
 
+        input UserInput {
+            email: String!
+            password: String
+        }
+
         type RootQuery {
             foods: [Food!]!
         }
 
         type RootMutation {
             createFood(foodInput: FoodInput): Food
+            createUser(userInput: UserInput): User
         }
         schema {
             query: RootQuery
@@ -66,14 +78,40 @@ app.use(
                 carbs: +args.foodInput.carbs,
                 date: new Date(args.foodInput.date)
             })
-            return food.save().then(res => {
+            return food.save()
+            .then(res => {
                 console.log(res);
                 return { ...res._doc, _id: res.id };
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.log(err);
                 throw err;
             });
-            
+        },
+        createUser: (args) => {
+            return User.findOne({email: args.userInput.email}).then(user => {
+                if (user) {
+                    throw new Error('user exists already');
+                }
+                return bcrypt
+                .hash(args.userInput.password, 12)
+            })
+            .then(hashedpassword => {
+                const user = new User({
+                    email: args.userInput.email,
+                    password: hashedpassword
+                });
+                return user.save();
+            })
+            .catch(err => {
+                throw err;
+            })
+            .then(result => {
+                return { ...result._doc, password: null, _id:result.id }
+            })
+            .catch(err => {
+                throw err
+            });
         }
     },
     graphiql: true
