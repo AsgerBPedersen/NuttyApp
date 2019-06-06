@@ -74,7 +74,7 @@ export default class App extends React.Component {
       return prev + curr.nutrients.CHOCDF * (curr.amount/100);
       }, 0)
     });
-  console.log(JSON.stringify(this.state.totalKcal))
+  
   }
   
   render() {
