@@ -89,7 +89,8 @@ app.use(
             });
         },
         createUser: (args) => {
-            return User.findOne({email: args.userInput.email}).then(user => {
+            return User.findOne({email: args.userInput.email})
+            .then(user => {
                 if (user) {
                     throw new Error('user exists already');
                 }
