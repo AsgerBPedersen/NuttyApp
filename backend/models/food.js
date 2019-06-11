@@ -27,7 +27,7 @@ const foodSchema = new Schema({
         type: Date,
         required: true
     },
-    creator: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
     }

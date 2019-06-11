@@ -2,7 +2,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "dev": "nodemon ./backend/index.js",
+    "dev": "nodemon ./backend/app.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject"
@@ -14,6 +14,7 @@
     "express": "^4.17.1",
     "express-graphql": "^0.8.0",
     "graphql": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.5.13",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
