@@ -1,22 +1,27 @@
 import React from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { StyleSheet, View, Text, Button, TextInput } from 'react-native';
+import Login from './Login';
+import SaveButton from './SaveButton';
 
 
 export default class DetailsScreen extends React.Component {
 
 render() {
-    const { onClick, baseState, updateInputValue, onClickAdd } = this.props.screenProps;
-    const { foodInventory, totalKcal, totalProtein, totalFat, totalCarbs } = baseState;
-    
+    const { onClickSave, onClickLogin, baseState, updateInputValue, onClickLogout } = this.props.screenProps;
+    const { foodInventory, totalKcal, totalProtein, totalFat, totalCarbs, isLoggedIn } = baseState;
+   
     return (
-            <View style={styles.container}>
-                <Text>daily intake</Text>
-                <Text>Kcal: {totalKcal}</Text>
-                <Text>Protein: {Math.round(totalProtein)}</Text>
-                <Text>Fat: {Math.round(totalFat)}</Text>
-                <Text>Carbs: {Math.round(totalCarbs)}</Text>
-            </View>
-            );
+      <View style={styles.container}>
+      <Login isLoggedIn={isLoggedIn} onClickLogin={onClickLogin} onClickLogout={onClickLogout}></Login>
+      <Text>daily intake</Text>
+      <Text>Kcal: {totalKcal}</Text>
+      <Text>Protein: {Math.round(totalProtein)}</Text>
+      <Text>Fat: {Math.round(totalFat)}</Text>
+      <Text>Carbs: {Math.round(totalCarbs)}</Text>
+      <SaveButton isLoggedIn={isLoggedIn} onClickSave={onClickSave}></SaveButton>
+    </View>  
+      );
+  
     }
 }
 

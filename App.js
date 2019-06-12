@@ -16,7 +16,11 @@ export default class App extends React.Component {
       totalProtein: 0,
       totalFat: 0,
       totalCarbs: 0,
-      searchValue: ""
+      searchValue: "",
+      isLoggedIn: false,
+      token: "",
+      username: "",
+      password: ""
     }  
   }
   
@@ -28,6 +32,83 @@ export default class App extends React.Component {
   updateInputValue = e => {
     this.setState({ searchValue: e });
   }
+
+  updateUsername = e => {
+    this.setState({ username: e });
+  }
+
+  updatePassword = e => {
+    this.setState({ password: e });
+  }
+ 
+  onClickSave = () => {
+      const query = `mutation {
+        createFood(foodInput: {name:"testfraapp", kcal:120, protein: 45, fat: 20, carbs: 21, date:"${new Date().toISOString()}"}) {
+          name
+        }
+      }`;
+      this.fetchDailyIntake(query);
+  }
+
+  fetchDailyIntake = query => {
+    const url = 'http://192.168.0.103:3000/graphql';
+    const params = {
+      headers:{
+        'Authorization': `bearer ${this.state.token}`,
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({ query }),
+      method:'POST'
+    };
+    fetch(url, params)
+    .then(response => response.json())
+    .then(data => console.log(JSON.stringify(data)))
+    .catch(err => console.log(err));
+
+  }
+
+  onClickLogin = () => {
+    const query = `query {
+        login(email:"asd@asd.dk" password:"1234") {
+           token
+           userId 
+          } 
+        }`;
+    this.fetchLogin(query);
+  }
+
+
+  fetchLogin = query => {
+    
+    const url = 'http://192.168.0.103:3000/graphql';
+    const params = {
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify({ query }),
+      method:'POST'
+    };
+    fetch(url, params)
+    .then(response => response.json())
+    .then(data => this.login(data))
+    .catch(err => console.log(err));
+
+  }
+
+  login = res => {
+      if (res.errors) {
+        console.log(res.errors[0].message)
+        return
+      } else {
+        this.setState({token: res.data.login.token, isLoggedIn: true });
+        console.log(this.state.isLoggedIn, this.state.token);
+      }
+  }
+
+  onClickLogout = () => {
+    this.setState({token: "", username: "", password: "", isLoggedIn: false});
+  }
+
   
   fetchFood = url => {
     fetch(url)
@@ -47,12 +128,10 @@ export default class App extends React.Component {
 
   onClick = () => {
     const url = this.generateUrl(this.state.searchValue);
-    console.log("works");
     this.fetchFood(url);
   }
 
   onClickAdd = (foodItem, amount) => {
-    console.log("works");
     const newInv = this.state.foodInventory;
     let newFoodItem = Object.create(foodItem);
     newFoodItem.amount = amount;
@@ -81,7 +160,7 @@ export default class App extends React.Component {
     return (
       <Swiper>
         <HomeScreen screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></HomeScreen>
-        <DetailsScreen screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></DetailsScreen>
+        <DetailsScreen screenProps={{baseState:this.state, onClickSave:this.onClickSave, onClickLogout:this.onClickLogout, onClickLogin:this.onClickLogin, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></DetailsScreen>
       </Swiper>
     )
   }
