@@ -8,8 +8,8 @@ export default class Login extends React.Component {
         
         if(!this.props.isLoggedIn) {
             return <View>
-                <TextInput placeholder="Username"></TextInput>
-                <TextInput placeholder="Password"></TextInput>
+                <TextInput onChangeText={(value) => this.props.updateUsername(value)} placeholder="Username"></TextInput>
+                <TextInput onChangeText={(value) => this.props.updatePassword(value)} placeholder="Password"></TextInput>
                 <Button onPress={this.props.onClickLogin} title="Login"></Button>
             </View>
         } else {

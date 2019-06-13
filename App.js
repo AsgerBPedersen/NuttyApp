@@ -43,7 +43,7 @@ export default class App extends React.Component {
  
   onClickSave = () => {
       const query = `mutation {
-        createFood(foodInput: {name:"testfraapp", kcal:120, protein: 45, fat: 20, carbs: 21, date:"${new Date().toISOString()}"}) {
+        createFood(foodInput: {name:"testfraapp", kcal:${this.state.totalKcal}, protein: ${this.state.totalProtein}, fat: ${this.state.totalFat}, carbs: ${this.state.totalCarbs}, date:"${new Date().toISOString()}"}) {
           name
         }
       }`;
@@ -69,7 +69,7 @@ export default class App extends React.Component {
 
   onClickLogin = () => {
     const query = `query {
-        login(email:"asd@asd.dk" password:"1234") {
+        login(email:"${this.state.username}" password:"${this.state.password}") {
            token
            userId 
           } 
@@ -160,7 +160,7 @@ export default class App extends React.Component {
     return (
       <Swiper>
         <HomeScreen screenProps={{baseState:this.state, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></HomeScreen>
-        <DetailsScreen screenProps={{baseState:this.state, onClickSave:this.onClickSave, onClickLogout:this.onClickLogout, onClickLogin:this.onClickLogin, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></DetailsScreen>
+        <DetailsScreen screenProps={{baseState:this.state, updateUsername:this.updateUsername, updatePassword:this.updatePassword, onClickSave:this.onClickSave, onClickLogout:this.onClickLogout, onClickLogin:this.onClickLogin, onClick:this.onClick, updateInputValue:this.updateInputValue, onClickAdd:this.onClickAdd}}></DetailsScreen>
       </Swiper>
     )
   }

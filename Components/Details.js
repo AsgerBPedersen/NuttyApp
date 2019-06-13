@@ -7,12 +7,12 @@ import SaveButton from './SaveButton';
 export default class DetailsScreen extends React.Component {
 
 render() {
-    const { onClickSave, onClickLogin, baseState, updateInputValue, onClickLogout } = this.props.screenProps;
-    const { foodInventory, totalKcal, totalProtein, totalFat, totalCarbs, isLoggedIn } = baseState;
+    const { onClickSave, onClickLogin, baseState, updateUsername, updatePassword, onClickLogout } = this.props.screenProps;
+    const { totalKcal, totalProtein, totalFat, totalCarbs, isLoggedIn } = baseState;
    
     return (
       <View style={styles.container}>
-      <Login isLoggedIn={isLoggedIn} onClickLogin={onClickLogin} onClickLogout={onClickLogout}></Login>
+      <Login updateUsername={updateUsername} updatePassword={updatePassword} isLoggedIn={isLoggedIn} onClickLogin={onClickLogin} onClickLogout={onClickLogout}></Login>
       <Text>daily intake</Text>
       <Text>Kcal: {totalKcal}</Text>
       <Text>Protein: {Math.round(totalProtein)}</Text>

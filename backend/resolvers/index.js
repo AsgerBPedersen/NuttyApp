@@ -57,13 +57,13 @@ module.exports = {
             fat: +args.foodInput.fat,
             carbs: +args.foodInput.carbs,
             date: new Date(args.foodInput.date),
-            user: '5cff5a019b7209337435922c'
+            user: req.userId
         })
         let createdFood;
         return food.save()
         .then(res => {
             createdFood = transformDailyIntake(res);
-            return User.findById('5cff5a019b7209337435922c')
+            return User.findById(res.userId)
         })
         .then(user => {
             if(!user) {
@@ -72,7 +72,7 @@ module.exports = {
             user.dailyIntakes.push(createdFood);
             return user.save();
         })
-        .then(result => {
+        .then(() => {
             return createdFood;
         })
         .catch(err => {
