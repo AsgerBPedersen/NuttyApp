@@ -21,7 +21,7 @@ app.use(
     graphiql: true
 }));
 
-mongoose.connect('mongodb://localhost/foodData')
+mongoose.connect('mongodb://mongo:27017/foodData')
 .then(() => {
     app.listen(3000);
 }).catch(err => {
