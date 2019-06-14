@@ -2,26 +2,27 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHttp = require('express-graphql');
 const mongoose = require('mongoose');
+const auth = require('./middleware/auth')
 
-const graphqlScemas = require('./graphql/schemas/index');
-const graphqlResolvers = require('./graphql/resolvers/index');
+const graphqlResolvers = require('./resolvers/index');
+const graphqlSchemas = require('./schemas/index');
 
 const app = express();
 
 app.use(bodyParser.json());
 
+app.use(auth);
 
 app.use(
     '/graphql',
      graphqlHttp({
-    schema: graphqlScemas,
+    schema: graphqlSchemas,
     rootValue: graphqlResolvers,
     graphiql: true
 }));
 
-mongoose.connect('mongodb://localhost/foodData')
+mongoose.connect('mongodb://mongo:27017/foodData')
 .then(() => {
-    console.log('connection working');
     app.listen(3000);
 }).catch(err => {
     console.log(err)
