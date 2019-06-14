@@ -1,7 +1,7 @@
 const { buildSchema } = require('graphql');
 
 module.exports = buildSchema(`
-type Food {
+type DailyIntake {
     _id: ID!
     name: String!
     kcal: Float!
@@ -12,14 +12,20 @@ type Food {
     date: String!
 }
 
+type AuthData {
+    userId: ID!
+    token: String!
+    tokenExpiration: Int!
+}
+
 type User {
     _id: ID!
     email: String!
     password: String
-    dailyIntake: [Food!]
+    dailyIntakes: [DailyIntake!]
 }
 
-input FoodInput {
+input DailyIntakeInput {
     name: String!
     kcal: Float!
     protein: Float!
@@ -34,11 +40,12 @@ input UserInput {
 }
 
 type RootQuery {
-    foods: [Food!]!
+    dailyIntakes: [DailyIntake!]!
+    login(email: String!, password: String!): AuthData!
 }
 
 type RootMutation {
-    createFood(foodInput: FoodInput): Food
+    createDailyIntake(dailyIntake: DailyIntakeInput): DailyIntake
     createUser(userInput: UserInput): User
 }
 schema {

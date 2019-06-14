@@ -26,6 +26,6 @@ export default class ListItem extends React.Component {
 const styles = StyleSheet.create({
   listItem: {
     flex: 1,
-    paddingTop: 50
+    padding: 45
   },
 });

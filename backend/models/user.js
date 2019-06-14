@@ -14,7 +14,7 @@ const userSchema = new Schema({
     dailyIntakes: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Food'
+            ref: 'DailyIntake'
         }
     ]
 });

@@ -4,8 +4,8 @@ const graphqlHttp = require('express-graphql');
 const mongoose = require('mongoose');
 const auth = require('./middleware/auth')
 
-const graphqlResolvers = require('./resolvers/index');
-const graphqlSchemas = require('./schemas/index');
+const graphqlResolvers = require('./graphql/resolvers/index');
+const graphqlSchemas = require('./graphql/schemas/index');
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use(
     graphiql: true
 }));
 
-mongoose.connect('mongodb://mongo:27017/foodData')
+mongoose.connect('mongodb://localhost/foodData')
 .then(() => {
     app.listen(3000);
 }).catch(err => {

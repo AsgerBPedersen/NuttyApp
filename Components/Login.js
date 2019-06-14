@@ -10,6 +10,7 @@ export default class Login extends React.Component {
             return <View>
                 <TextInput onChangeText={(value) => this.props.updateUsername(value)} placeholder="Username"></TextInput>
                 <TextInput onChangeText={(value) => this.props.updatePassword(value)} placeholder="Password"></TextInput>
+                <Text>{this.props.loginMessage}</Text>
                 <Button onPress={this.props.onClickLogin} title="Login"></Button>
             </View>
         } else {

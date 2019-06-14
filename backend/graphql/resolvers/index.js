@@ -1,90 +1,101 @@
-const bcrypt = require('bcryptjs');
-
-const Food = require("../../models/food");
+const DailyIntake = require("../../models/dailyIntake");
 const User = require("../../models/user");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-
-const foods = async foodIds => {
-    try {
-        const foods = await Food.find({ _id: { $in: foodIds } });
-        return foods.map(food => {
-            return {
-                ...food._doc,
-                _id: food.id,
-                date: new Date(food._doc.date).toISOString(),
-                user: user.bind(this, food.user)
-            };
-        });
-    }
-    catch (err) {
-        throw new Error(err);
-    }
-}
+const transformDailyIntake = intake => {
+    return { ...intake._doc, _id: intake.id, date: new Date(intake._doc.date).toISOString(), user: user.bind(this, intake.user )}
+};
 
 const user = userId => {
     return User.findById(userId)
-    .then(user => {
-        return { 
-            ...user._doc,
-            _id: user.id,
-            dailyIntake: foods.bind(this, user._doc.dailyIntake)
-        };
-    })
-    .catch(err => {
-        throw new Error(err);
-    })
-}
-
-
-
-module.exports = {
-    foods: () => {
-        // finds all instances of foods in the db populates the user field
-        return Food.find()
-            .then(food => {
-                return food.map(food => {
-                    return { 
-                        ...food._doc, 
-                        //returns the id in a string format
-                        _id: food._doc._id.toString(),
-                        date: new Date(food._doc.date).toISOString(),
-                        user: user.bind(this, food._doc.user)
-                    };
-            });
-        }).catch(err => {
+        .then(user => {
+            return { 
+                ...user._doc,
+                 _id: user.id,
+                  dailyIntakes: intakes.bind(this, user._doc.dailyIntakes ) };
+        })
+        .catch(err => {
             throw err;
         })
-    },
-    createFood: (args) => {
-        const food = new Food({
-            name: args.foodInput.name,
-            kcal: +args.foodInput.kcal,
-            protein: +args.foodInput.protein,
-            fat: +args.foodInput.fat,
-            carbs: +args.foodInput.carbs,
-            date: new Date(args.foodInput.date),
-            //user id is hardcoded for now
-            user: '5cfcf45a86ed401cdc17bb54'
+};
+
+const intakes = intakeIds => {
+    return DailyIntake.find({ _id: { $in: intakeIds }})
+    .then(intakes => {
+        return intakes.map(intake => {
+            return transformDailyIntake(intake);
+        })
+    })
+    .catch(err => {
+        throw err;
+    })
+};
+
+module.exports = {
+    dailyIntakes: (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('not authenticated');
+        }
+        return DailyIntake.find()
+            .then(intakes => {
+                return intakes.map(intake => {
+                    return transformDailyIntake(intake);
+                })
+        })
+        .catch(err => {
+            throw err;
         });
-        let createdFood;
-        return food.save()
+    },
+    createDailyIntake: (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('not authenticated');
+        }
+        const dailyIntake = new DailyIntake({
+            name: args.dailyIntake.name,
+            kcal: +args.dailyIntake.kcal,
+            protein: +args.dailyIntake.protein,
+            fat: +args.dailyIntake.fat,
+            carbs: +args.dailyIntake.carbs,
+            date: new Date(args.dailyIntake.date),
+            user: req.userId
+        })
+        let newDailyIntake;
+        return dailyIntake.save()
         .then(res => {
-            createdFood = { ...res._doc, _id: res.id,date: new Date(res._doc.date).toISOString(), user: user.bind(this, res._doc.user) };
-            return User.findById('5cfcf45a86ed401cdc17bb54');
-        }).then(user  => {
-            if (!user) {
-                throw new Error('User doesnt exist.')
+            newDailyIntake = transformDailyIntake(res);
+            return User.findById(req.userId)
+        })
+        .then(user => {
+            if(!user) {
+                throw new Error('User not found.');
             }
-            //saves the new food item in the users array of created foods
-            user.dailyIntake.push(food);
+            user.dailyIntakes.push(newDailyIntake);
             return user.save();
-        }).then(() => {
-            return createdFood;
+        })
+        .then(() => {
+            return newDailyIntake;
         })
         .catch(err => {
             console.log(err);
             throw err;
         });
+    },
+    login: async ({email, password}) => {
+        const user = await User.findOne({email: email });
+        if (!user) {
+            throw new Error('user doesnt exist');
+        }
+         const isEqual = await bcrypt.compare(password, user.password);
+         if (!isEqual) {
+             throw new Error('password is incorrect');
+         }
+         const token = jwt.sign({userId: user.id, email: user.email}, 'secretKey', {
+             expiresIn: '1h'
+         });
+         return { userId: user.id, token: token, tokenExpiration: 1 };
+
+
     },
     createUser: (args) => {
         return User.findOne({email: args.userInput.email})
@@ -92,8 +103,7 @@ module.exports = {
             if (user) {
                 throw new Error('user exists already');
             }
-            return bcrypt
-            .hash(args.userInput.password, 12)
+            return bcrypt.hash(args.userInput.password, 12)
         })
         .then(hashedpassword => {
             const user = new User({

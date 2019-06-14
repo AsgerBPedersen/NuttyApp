@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const foodSchema = new Schema({
+const dailyIntakeSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -33,4 +33,4 @@ const foodSchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Food',foodSchema);
+module.exports = mongoose.model('DailyIntake',dailyIntakeSchema);

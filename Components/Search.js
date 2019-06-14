@@ -6,7 +6,7 @@ export default class Search extends React.Component {
 
 render() {
     return (
-            <View>
+            <View style={styles.view} >
                 <TextInput
                 onChangeText={(value) => this.props.updateInputValue(value)}
                 placeholder="search here" value={this.props.searchValue}>
@@ -16,3 +16,9 @@ render() {
             );
     }
 }
+
+const styles = StyleSheet.create({
+    view: {
+      padding: 25
+    },
+  });

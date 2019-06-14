@@ -2,7 +2,7 @@ import React from 'react';
 import HomeScreen from './Components/Home';
 import DetailsScreen from './Components/Details';
 import Swiper from 'react-native-swiper';
-import { API_KEY, API_ID } from 'react-native-dotenv';
+import { API_KEY, API_ID, DB_API } from 'react-native-dotenv';
 
 
 
@@ -20,7 +20,8 @@ export default class App extends React.Component {
       isLoggedIn: false,
       token: "",
       username: "",
-      password: ""
+      password: "",
+      loginMessage: ""
     }  
   }
   
@@ -43,7 +44,7 @@ export default class App extends React.Component {
  
   onClickSave = () => {
       const query = `mutation {
-        createFood(foodInput: {name:"testfraapp", kcal:${this.state.totalKcal}, protein: ${this.state.totalProtein}, fat: ${this.state.totalFat}, carbs: ${this.state.totalCarbs}, date:"${new Date().toISOString()}"}) {
+        createFood(dailyIntake: {name:"testfraapp", kcal:${this.state.totalKcal}, protein: ${this.state.totalProtein}, fat: ${this.state.totalFat}, carbs: ${this.state.totalCarbs}, date:"${new Date().toISOString()}"}) {
           name
         }
       }`;
@@ -51,7 +52,7 @@ export default class App extends React.Component {
   }
 
   fetchDailyIntake = query => {
-    const url = 'http://192.168.0.103:3000/graphql';
+    const url = `${DB_API}`;
     const params = {
       headers:{
         'Authorization': `bearer ${this.state.token}`,
@@ -66,7 +67,7 @@ export default class App extends React.Component {
     .catch(err => console.log(err));
 
   }
-
+ 
   onClickLogin = () => {
     const query = `query {
         login(email:"${this.state.username}" password:"${this.state.password}") {
@@ -77,10 +78,8 @@ export default class App extends React.Component {
     this.fetchLogin(query);
   }
 
-
   fetchLogin = query => {
-    
-    const url = 'http://192.168.0.103:3000/graphql';
+    const url = `${DB_API}`;
     const params = {
       headers:{
         'Content-Type': 'application/json'
@@ -97,10 +96,10 @@ export default class App extends React.Component {
 
   login = res => {
       if (res.errors) {
-        console.log(res.errors[0].message)
+        this.setState({loginMessage: res.errors[0].message})
         return
       } else {
-        this.setState({token: res.data.login.token, isLoggedIn: true });
+        this.setState({token: res.data.login.token, isLoggedIn: true, loginMessage: "" });
         console.log(this.state.isLoggedIn, this.state.token);
       }
   }
