@@ -47,12 +47,11 @@ export default class App extends React.Component {
 
   onClick = () => {
     const url = this.generateUrl(this.state.searchValue);
-    console.log("works");
+
     this.fetchFood(url);
   }
 
   onClickAdd = (foodItem, amount) => {
-    console.log("works");
     const newInv = this.state.foodInventory;
     let newFoodItem = Object.create(foodItem);
     newFoodItem.amount = amount;
